@@ -125,8 +125,7 @@ int main(int argc, char **argv, char **envp) {
 
 	printf("Content-type: text/html\n\n");
 	parse_args(envp);
-	//int dep=get_dept(getenv("REMOTE_ADDR"));
-	int dep=get_dept("2a01:e35:2e4b:b2b0:21b:11ff:fec1:b7fb");
+	int dep=get_dept(getenv("REMOTE_ADDR"));
 	char *dept;
 	int i;
 	for(i=0;names[i].dep!=0;i++) {
