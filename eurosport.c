@@ -36,7 +36,7 @@ int main(int argc, char **argv, char **envp) {
 	if(cat>=sizeof(url))
 		return -2;
 	char *cmd;
-	asprintf(&cmd, "curl '%s' 2>/dev/null", url[cat]);
+	asprintf(&cmd, "curl '%s' 2>/dev/null |iconv -f UTF-8 -t ISO-8859-15", url[cat]);
 	FILE *fd=popen(cmd, "r");
 	ezxml_t tree=ezxml_parse_fp(fd);
 	pclose(fd);
@@ -48,7 +48,8 @@ int main(int argc, char **argv, char **envp) {
 	if(!item)
 		return 2;
 	printf("<html>\n<head><meta name=\"info_page\" content=\"index.html\">\n\n");
-	printf("\t<body>\n\t\t<table width=600 border=0 cellpadding=8 cellspacing=0 align=center>\n");
+	printf("<link rel=\"red\" href=\"eurosport.html\">\n");
+	printf("</head>\t<body>\n\t\t<table width=600 border=0 cellpadding=8 cellspacing=0 align=center>\n");
 	do {
 		ezxml_t title=ezxml_child(item, "title");
 		char *url=ezxml_child(item, "link")->txt;
@@ -57,11 +58,11 @@ int main(int argc, char **argv, char **envp) {
 		if(!url) continue;
 		url=index(url, '/')+1;
 		if(!url) continue;
-		printf("<tr><td><a href='eurosport2.cgi?%s'>%s</a></td></tr>\n", url, title->txt);
+		printf("<tr><td><a href='eurosport2.cgi?%s&%d'>%s</a></td></tr>\n", url, cat, title->txt);
 	} while((item=item->next));
 	printf("\t\t</table>\n\t\t<table width=600 border=0 cellpadding=8 cellspacing=0 align=center>");
-	printf("\t\t<tr><td><FONT family=\"Symbol\" color=\"#FF000020\"size=5>\x29</FONT>&nbsp; Sortie&nbsp;</td><td><FONT family=\"Symbol\" color=\"#0000FF20\"size=5>\x29</FONT>&nbsp; Page suivante</td><td>"
-			"<FONT family=\"Symbol\" color=\"#00FF0020\"size=5>\x29</FONT>&nbsp; Page precedente</td></td></tr></table>\n</body>\n</html>\n");
+	printf("\t\t<tr><td><FONT family=\"Symbol\" color=\"#FF000020\"size=5>\x29</FONT>&nbsp; Index&nbsp;</td>"
+			"</tr></table>\n</body>\n</html>\n");
 	end_dept();
 	return 0;
 }
