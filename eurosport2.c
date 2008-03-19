@@ -29,7 +29,7 @@ int main(int argc, char **argv, char **envp) {
 	asprintf(&cmd, "wget -q -O - 'http://www.eurosport.fr/%s' 2>/dev/null |grep storyfulltitleboxcontainer|html2text|grep -Ev '(\\[|\\])' |tail -n +3", file);
 	printf("%s\n", cmd);
 	printf("<html>\n<head><meta name=\"info_page\" content=\"index.html\">\n\n");
-	printf("<link rel=\"red\" href=\"euronews.cgi\">\n");
+	printf("<link rel=\"red\" href=\"eurosport.cgi?%s\">\n", cat);
 	printf("\t</head><body>\n\t\t<table width=600 border=0 cellpadding=8 cellspacing=0 align=center>\n");
 	printf("<tr><td>\n");
 	char *buffer=malloc(32768);

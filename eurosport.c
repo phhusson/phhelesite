@@ -13,13 +13,30 @@ extern short get_dept(char*);
 extern void init_dept();
 extern void end_dept();
 
+char url[8][60] = {
+	"http://www.eurosport.fr/z/rss.xml",
+	"http://www.eurosport.fr/z/automoto/rss.xml",
+	"http://www.eurosport.fr/z/tennis/rss.xml",
+	"http://www.eurosport.fr/z/football/rss.xml",
+	"http://www.eurosport.fr/z/hiver/rss.xml",
+	"http://www.eurosport.fr/z/basketball/rss.xml",
+	"http://www.eurosport.fr/z/cyclisme/rss.xml",
+	"http://www.eurosport.fr/z/golf/rss.xml"
+};
+
+
 int main(int argc, char **argv, char **envp) {
 	init_dept();
 	get_dept(getenv("REMOTE_ADDR"));
 	printf("Content-type: text/html\n\n");
 	parse_args(envp);
+	if(args_ln<1)
+		return -1;
+	int cat=atoi(args[0]);
+	if(cat>=sizeof(url))
+		return -2;
 	char *cmd;
-	asprintf(&cmd, "curl http://www.rugbyrama.fr/z/rugby/rss.xml 2>/dev/null");
+	asprintf(&cmd, "curl '%s' 2>/dev/null", url[cat]);
 	FILE *fd=popen(cmd, "r");
 	ezxml_t tree=ezxml_parse_fp(fd);
 	pclose(fd);
@@ -32,7 +49,6 @@ int main(int argc, char **argv, char **envp) {
 		return 2;
 	printf("<html>\n<head><meta name=\"info_page\" content=\"index.html\">\n\n");
 	printf("\t<body>\n\t\t<table width=600 border=0 cellpadding=8 cellspacing=0 align=center>\n");
-	int i=0;
 	do {
 		ezxml_t title=ezxml_child(item, "title");
 		char *url=ezxml_child(item, "link")->txt;
